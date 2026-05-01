@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Manar Digital Empire – Brand Color Quiz</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#12131a;--bg2:#191d28;--bg3:#1f2432;
+    --text:#f4f7ff;--text2:#abb1cc;--text3:#7f89a4;
+    --border:rgba(255,255,255,0.08);--accent:#6be0ff;
+    --accent-2:#f4f1a8;--accent-3:#7dc8ff;
+    --radius:12px;--radius-sm:8px;
+  }
+  body{font-family:'Segoe UI',system-ui,sans-serif;background-image:radial-gradient(circle at top left, rgba(107,224,255,0.18), transparent 16%),radial-gradient(circle at bottom right, rgba(244,241,168,0.18), transparent 18%),url("images/photo1.jpg");background-size:cover,cover,cover;background-position:center center,center center,center center;background-repeat:no-repeat,no-repeat,no-repeat;color:var(--text);min-height:100vh;overflow-x:hidden}
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%,-50%);
+    transition: transform 0.1s, width 0.2s, height 0.2s, background 0.2s;
+    mix-blend-mode: difference;
+    box-shadow: 0 0 8px var(--accent), 0 0 16px rgba(107,224,255,0.5);
+  }
+  .cursor-ring {
+    width: 32px; height: 32px;
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%,-50%);
+    transition: transform 0.12s ease-out, width 0.3s, height 0.3s, opacity 0.3s, box-shadow 0.3s;
+    opacity: 0.6;
+    box-shadow: 0 0 12px rgba(107,224,255,0.3);
+  }
+  .cursor-ring.active {
+    box-shadow: 0 0 24px rgba(107,224,255,0.6), 0 0 36px rgba(244,241,168,0.3);
+    animation: cursorGlow 1.5s ease-in-out infinite;
+  }
+
+  /* NAV */
+  nav{display:flex;align-items:center;justify-content:center;padding:1.2rem 2rem;border-bottom:0.5px solid var(--border);background:var(--bg);position:relative;overflow:hidden}
+  .logo{font-size:1.2rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:linear-gradient(45deg, var(--accent), var(--accent-2), var(--accent-3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;color:transparent;text-shadow:0 0 20px rgba(107,224,255,0.5);transition:transform 0.1s ease;will-change:transform}
+  .logo span{background:linear-gradient(45deg, var(--accent-2), var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;color:transparent;text-shadow:0 0 20px rgba(244,241,168,0.5);font-weight:600}
+
+  /* SCREENS */
+  .screen{display:none;animation:fadeIn .4s ease}
+  .screen.active{display:block}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  @keyframes neonPulse{from{box-shadow:0 0 12px rgba(107,224,255,0.14),0 0 24px rgba(107,224,255,0.08)}to{box-shadow:0 0 20px rgba(244,241,168,0.22),0 0 36px rgba(244,241,168,0.12)}}
+  @keyframes glowFloat{0%{transform:translateY(0)}50%{transform:translateY(-4px)}100%{transform:translateY(0)}}
+  @keyframes cursorGlow{0%,100%{box-shadow:0 0 8px var(--accent), 0 0 16px rgba(107,224,255,0.5)}50%{box-shadow:0 0 12px var(--accent), 0 0 24px rgba(107,224,255,0.8)}}
+
+  /* HERO */
+  #screen-hero{text-align:center;padding:5rem 2rem 4rem}
+  .hero-badge{display:inline-block;font-size:.72rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);border:0.5px solid var(--border);border-radius:50px;padding:.3rem 1rem;margin-bottom:2rem}
+  .hero-title{font-size:clamp(2rem,5vw,3.5rem);font-weight:600;line-height:1.15;max-width:700px;margin:0 auto 1.25rem}
+  .hero-sub{font-size:1.05rem;color:var(--text2);max-width:520px;margin:0 auto 2.5rem;line-height:1.7}
+  .btn-primary{display:inline-block;background:linear-gradient(135deg, rgba(107,224,255,0.22), rgba(244,241,168,0.22));color:#fff;border:1px solid rgba(255,255,255,0.14);border-radius:var(--radius-sm);padding:.85rem 2.2rem;font-size:.95rem;font-weight:500;cursor:pointer;letter-spacing:.02em;transition:all .25s ease;box-shadow:0 0 12px rgba(107,224,255,0.12);backdrop-filter:blur(4px)}
+  .btn-primary:hover{opacity:1;transform:translateY(-2px);box-shadow:0 0 24px rgba(107,224,255,0.28),0 0 36px rgba(244,241,168,0.18)}
+
+  /* PALETTE COUNT */
+  #screen-count{max-width:600px;margin:0 auto;padding:4rem 2rem}
+  .section-label{font-size:.72rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:1.5rem}
+  .section-title{font-size:1.6rem;font-weight:600;margin-bottom:.6rem}
+  .section-sub{font-size:.95rem;color:var(--text2);margin-bottom:2.5rem;line-height:1.65}
+  .count-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:2rem}
+  .count-btn{width:64px;height:64px;border-radius:var(--radius-sm);border:0.5px solid var(--border);background:var(--bg2);font-size:1.4rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s;color:var(--text3);}
+  .count-btn:hover{border-color:rgba(107,224,255,0.35);background:rgba(255,255,255,0.04);color:var(--text)}
+  .count-btn.selected{background:rgba(107,224,255,0.16);color:#fff;border-color:rgba(107,224,255,0.6);box-shadow:0 0 18px rgba(107,224,255,0.18)}
+
+  /* FAV COLOR */
+  #screen-fav{max-width:600px;margin:0 auto;padding:4rem 2rem}
+  .fav-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:12px;margin-bottom:2rem}
+  .fav-item{border:0.5px solid var(--border);border-radius:var(--radius);padding:1rem .5rem;text-align:center;cursor:pointer;transition:all .18s;background:rgba(255,255,255,0.02);}
+  .fav-item:hover{border-color:rgba(107,224,255,0.28);transform:translateY(-2px);box-shadow:0 0 16px rgba(107,224,255,0.08)}
+  .fav-item.selected{border-width:2px;border-color:rgba(107,224,255,0.8);box-shadow:0 0 18px rgba(107,224,255,0.2)}
+  .fav-swatch{width:44px;height:44px;border-radius:50%;margin:0 auto .6rem}
+  .fav-name{font-size:.78rem;color:var(--text2)}
+
+  /* QUIZ */
+  #screen-quiz{max-width:700px;margin:0 auto;padding:3rem 2rem}
+  .quiz-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem}
+  .quiz-num{font-size:.78rem;color:var(--text3)}
+  .progress-bar{height:3px;background:var(--border);border-radius:2px;margin-bottom:2.5rem;overflow:hidden}
+  .progress-fill{height:100%;background:var(--text);border-radius:2px;transition:width .4s ease}
+  .quiz-q{font-size:1.25rem;font-weight:500;margin-bottom:.5rem;line-height:1.5}
+  .quiz-hint{font-size:.85rem;color:var(--text3);margin-bottom:2rem}
+  .options-grid{display:grid;gap:10px;margin-bottom:2rem}
+  .opt{border:0.5px solid var(--border);border-radius:var(--radius);padding:.9rem 1.2rem;cursor:pointer;font-size:.95rem;text-align:left;background:rgba(255,255,255,0.03);color:var(--text);transition:all .18s;display:flex;align-items:center;gap:.75rem;animation:fadeIn .35s ease both;will-change:transform,box-shadow}
+  .opt:hover{border-color:rgba(107,224,255,0.35);background:rgba(255,255,255,0.06);box-shadow:0 0 18px rgba(107,224,255,0.08)}
+  .opt.selected{border-color:rgba(107,224,255,0.8);background:rgba(107,224,255,0.1);font-weight:500;box-shadow:0 0 18px rgba(107,224,255,0.16)}
+  .opt-letter{width:26px;height:26px;border-radius:50%;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:600;flex-shrink:0;color:var(--text3);background:rgba(255,255,255,0.03)}
+  .opt.selected .opt-letter{background:rgba(107,224,255,0.9);color:#090c13;border-color:rgba(107,224,255,0.9)}
+  .quiz-nav{display:flex;justify-content:space-between;align-items:center}
+  .btn-ghost{background:none;border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:.7rem 1.5rem;font-size:.9rem;cursor:pointer;color:var(--text2);transition:all .18s}
+  .btn-ghost:hover{border-color:#aaa;color:var(--text)}
+  .btn-next{background:var(--text);color:#fff;border:none;border-radius:var(--radius-sm);padding:.7rem 1.8rem;font-size:.9rem;font-weight:500;cursor:pointer;transition:opacity .2s}
+  .btn-next:hover{opacity:.8}
+  .btn-next:disabled{opacity:.35;cursor:default}
+
+  /* LOADING */
+  #screen-loading{text-align:center;padding:6rem 2rem}
+  .loader{display:inline-flex;gap:8px;margin:2rem 0}
+  .dot{width:10px;height:10px;border-radius:50%;background:var(--accent);opacity:.35;box-shadow:0 0 18px rgba(107,224,255,0.24);animation:pulse 1.2s ease-in-out infinite}
+  .dot:nth-child(2){animation-delay:.2s}
+  .dot:nth-child(3){animation-delay:.4s}
+  @keyframes pulse{0%,100%{opacity:.2}50%{opacity:1}}
+
+  /* RESULT */
+  #screen-result{max-width:720px;margin:0 auto;padding:3rem 2rem 5rem}
+  .result-header{text-align:center;margin-bottom:3rem}
+  .result-badge{display:inline-block;font-size:.72rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);border:0.5px solid var(--border);border-radius:50px;padding:.3rem 1rem;margin-bottom:1.2rem}
+  .result-name{font-size:2rem;font-weight:600;margin-bottom:.5rem}
+  .result-tagline{color:var(--text2);font-size:1rem;line-height:1.6}
+  .palette-strip{display:flex;border-radius:var(--radius);overflow:hidden;height:80px;margin:2rem 0;box-shadow:0 0 36px rgba(107,224,255,0.08)}
+  .palette-color{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:8px;cursor:pointer;transition:all .3s;animation:neonPulse 3.2s ease-in-out infinite alternate;transform:translateY(0);}
+  .palette-color:hover{flex:2;transform:translateY(-4px);box-shadow:0 0 30px rgba(255,255,255,0.2),0 0 45px rgba(107,224,255,0.25)}
+  .palette-hex{font-size:.65rem;font-weight:600;opacity:.85;letter-spacing:.05em}
+  .palette-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin:1.5rem 0}
+  .pcard{border:0.5px solid var(--border);border-radius:var(--radius);overflow:hidden;background:rgba(255,255,255,0.02);box-shadow:0 0 18px rgba(107,224,255,0.06);transform:translateY(0);animation:fadeIn .4s ease both;}
+  .pcard-swatch{height:70px}
+  .pcard-body{padding:.9rem}
+  .pcard-role{font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:.3rem}
+  .pcard-color-name{font-size:.95rem;font-weight:500;margin-bottom:.2rem}
+  .pcard-hex-code{font-size:.78rem;color:var(--text3);font-family:monospace}
+  .pcard-meaning{font-size:.8rem;color:var(--text2);margin-top:.5rem;line-height:1.5}
+  .psychology-section{border:0.5px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin:2rem 0}
+  .psy-title{font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:1rem}
+  .trait-row{display:flex;align-items:center;gap:12px;margin-bottom:.8rem}
+  .trait-label{font-size:.82rem;color:var(--text2);width:120px;flex-shrink:0}
+  .trait-bar-bg{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+  .trait-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg, rgba(107,224,255,0.95), rgba(244,241,168,0.9));transition:width .8s ease;box-shadow:0 0 14px rgba(107,224,255,0.12)}
+  .trait-score{font-size:.78rem;font-weight:600;min-width:28px;text-align:right}
+  .restart-btn{display:block;margin:2rem auto 0;background:none;border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:.75rem 2rem;cursor:pointer;font-size:.9rem;color:var(--text2);transition:all .18s}
+  .restart-btn:hover{border-color:var(--text);color:var(--text)}
+  .copy-btn{font-size:.7rem;background:var(--bg2);border:0.5px solid var(--border);border-radius:4px;padding:2px 6px;cursor:pointer;margin-left:4px;color:var(--text2)}
+  .copy-btn:hover{color:var(--text)}
+
+  /* CLIP */
+  .copied-toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--text);color:#fff;padding:.5rem 1.2rem;border-radius:50px;font-size:.82rem;pointer-events:none;opacity:0;transition:opacity .3s}
+  .copied-toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <div class="logo">Manar <span>Digital Empire</span></div>
+</nav>
+
+<!-- HERO -->
+<div id="screen-hero" class="screen active">
+  <div class="hero-badge">Brand Identity Tool</div>
+  <h1 class="hero-title">Discover Your Perfect Brand Color Palette</h1>
+  <p class="hero-sub">Answer 50 psychology-based questions and we'll build a scientifically matched color theme for your brand — rooted in human behavior and color theory.</p>
+  <button class="btn-primary" onclick="goTo('count')">Start the Quiz</button>
+</div>
+
+<!-- COUNT -->
+<div id="screen-count" class="screen">
+  <div class="section-label">Step 1 of 3 — Palette Size</div>
+  <h2 class="section-title">How many colors do you want in your brand palette?</h2>
+  <p class="section-sub">Most brands use 2–3 colors. A wider palette offers more versatility but requires careful balance.</p>
+  <div class="count-row" id="count-row"></div>
+  <button class="btn-primary" id="count-next" onclick="goTo('fav')" disabled>Continue</button>
+</div>
+
+<!-- FAV -->
+<div id="screen-fav" class="screen">
+  <div class="section-label">Step 2 of 3 — Color Instinct</div>
+  <h2 class="section-title">Which colors do you naturally gravitate toward?</h2>
+  <p class="section-sub">Pick as many as feel right. This captures your intuitive color preference before the deep analysis begins.</p>
+  <div class="fav-grid" id="fav-grid"></div>
+  <button class="btn-primary" onclick="startQuiz()">Start 50-Question Analysis</button>
+</div>
+
+<!-- QUIZ -->
+<div id="screen-quiz" class="screen">
+  <div class="quiz-meta">
+    <span class="quiz-num" id="quiz-num">Question 1 of 50</span>
+    <span class="quiz-num" id="quiz-score-label"></span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+  <h2 class="quiz-q" id="quiz-q"></h2>
+  <p class="quiz-hint" id="quiz-hint"></p>
+  <div class="options-grid" id="options-grid"></div>
+  <div class="quiz-nav">
+    <button class="btn-ghost" id="btn-back" onclick="quizBack()">Back</button>
+    <button class="btn-next" id="btn-next" onclick="quizNext()" disabled>Next</button>
+  </div>
+</div>
+
+<!-- LOADING -->
+<div id="screen-loading" class="screen">
+  <div style="font-size:.78rem;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:1rem">Analyzing your responses</div>
+  <h2 style="font-size:1.5rem;font-weight:600;margin-bottom:.5rem">Building your brand palette</h2>
+  <p style="color:var(--text2);font-size:.95rem">Cross-referencing 8 psychological dimensions…</p>
+  <div class="loader"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+</div>
+
+<!-- RESULT -->
+<div id="screen-result" class="screen">
+  <div class="result-header">
+    <div class="result-badge">Your Brand Palette</div>
+    <h1 class="result-name" id="result-name"></h1>
+    <p class="result-tagline" id="result-tagline"></p>
+  </div>
+  <div class="palette-strip" id="palette-strip"></div>
+  <div class="palette-cards" id="palette-cards"></div>
+  <div class="psychology-section">
+    <div class="psy-title">Your Brand Psychology Profile</div>
+    <div id="trait-bars"></div>
+  </div>
+  <div style="background:var(--bg2);border-radius:var(--radius);padding:1.5rem;margin-top:1.5rem">
+    <div style="font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:.75rem">Why these colors work for you</div>
+    <p style="font-size:.9rem;color:var(--text2);line-height:1.7" id="result-explanation"></p>
+  </div>
+  <button class="restart-btn" onclick="restart()">Take the quiz again</button>
+</div>
+
+<div class="copied-toast" id="toast">Copied!</div>
+
+<!-- Click Sound -->
+<audio id="clickSound" preload="auto">
+  <source src="sounds/click1.wav" type="audio/wav">
+</audio>
+
+<script>
+/* CURSOR & MOUSE TRACKING */
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+const logo = document.querySelector('.logo');
+let mx = 0, my = 0, rx = 0, ry = 0, lx = 0, ly = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX;
+  my = e.clientY;
+  cursor.style.left = mx + 'px';
+  cursor.style.top = my + 'px';
+});
+
+// Play click sound utility
+function playClickSound() {
+  const clickAudio = document.getElementById('clickSound');
+  if(clickAudio) {
+    clickAudio.currentTime = 0;
+    clickAudio.play().catch(e => console.log('Audio play failed:', e));
+  }
+}
+
+(function animRing() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  ring.style.left = rx + 'px';
+  ring.style.top = ry + 'px';
+  requestAnimationFrame(animRing);
+})();
+
+(function animLogo() {
+  lx += (mx - lx) * 0.02;
+  ly += (my - ly) * 0.02;
+  const centerX = window.innerWidth / 2;
+  const centerY = 50; // nav height approx
+  const deltaX = (lx - centerX) * 0.01;
+  const deltaY = (ly - centerY) * 0.01;
+  logo.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+  requestAnimationFrame(animLogo);
+})();
+
+document.querySelectorAll('button, .opt, .fav-item, .count-btn, .palette-color').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cursor.style.width = '6px';
+    cursor.style.height = '6px';
+    ring.style.width = '48px';
+    ring.style.height = '48px';
+    ring.style.opacity = '0.9';
+    ring.classList.add('active');
+  });
+  el.addEventListener('mouseleave', () => {
+    cursor.style.width = '8px';
+    cursor.style.height = '8px';
+    ring.style.width = '32px';
+    ring.style.height = '32px';
+    ring.style.opacity = '0.6';
+    ring.classList.remove('active');
+  });
+});
+
+const COLORS_DB = {
+  red:      {hex:"#E53E3E",name:"Crimson Red",   meaning:"Passion, energy, urgency — commands attention and drives action"},
+  orange:   {hex:"#ED8936",name:"Vibrant Orange", meaning:"Enthusiasm, creativity, warmth — approachable yet dynamic"},
+  yellow:   {hex:"#ECC94B",name:"Golden Yellow",  meaning:"Optimism, clarity, intellect — stimulates positive thinking"},
+  green:    {hex:"#38A169",name:"Forest Green",   meaning:"Growth, harmony, trust — deeply connected to nature and balance"},
+  teal:     {hex:"#319795",name:"Modern Teal",    meaning:"Clarity, calm confidence, innovation — fresh and forward-thinking"},
+  blue:     {hex:"#3182CE",name:"Royal Blue",     meaning:"Trust, stability, professionalism — the world's most universally trusted color"},
+  navy:     {hex:"#2C5282",name:"Deep Navy",      meaning:"Authority, depth, reliability — projects gravitas and expertise"},
+  purple:   {hex:"#805AD5",name:"Regal Purple",   meaning:"Luxury, wisdom, creativity — historically associated with prestige"},
+  pink:     {hex:"#D53F8C",name:"Bold Pink",      meaning:"Empathy, playfulness, confidence — modern, disruptive, human"},
+  rose:     {hex:"#FC8181",name:"Soft Rose",      meaning:"Warmth, care, approachability — gentle yet memorable"},
+  brown:    {hex:"#975A16",name:"Rich Brown",     meaning:"Reliability, comfort, earthiness — timeless and authentic"},
+  black:    {hex:"#1A202C",name:"Midnight Black", meaning:"Sophistication, elegance, authority — premium and definitive"},
+  white:    {hex:"#F7FAFC",name:"Clean White",    meaning:"Purity, simplicity, clarity — minimalist and modern"},
+  gray:     {hex:"#718096",name:"Steel Gray",     meaning:"Balance, neutrality, professionalism — versatile and timeless"},
+  gold:     {hex:"#D4AF37",name:"Prestige Gold",  meaning:"Luxury, achievement, success — signals premium value"},
+  indigo:   {hex:"#4C51BF",name:"Deep Indigo",    meaning:"Wisdom, integrity, depth — analytical and trustworthy"},
+  lime:     {hex:"#68D391",name:"Fresh Lime",     meaning:"Energy, vitality, innovation — modern and eco-forward"},
+  coral:    {hex:"#F6AD55",name:"Warm Coral",     meaning:"Friendliness, warmth, creativity — inviting and expressive"},
+};
+
+const FAV_COLORS = [
+  {id:"red",   hex:"#E53E3E", label:"Red"},
+  {id:"orange",hex:"#ED8936", label:"Orange"},
+  {id:"yellow",hex:"#ECC94B", label:"Yellow"},
+  {id:"green", hex:"#38A169", label:"Green"},
+  {id:"teal",  hex:"#319795", label:"Teal"},
+  {id:"blue",  hex:"#3182CE", label:"Blue"},
+  {id:"navy",  hex:"#2C5282", label:"Navy"},
+  {id:"purple",hex:"#805AD5", label:"Purple"},
+  {id:"pink",  hex:"#D53F8C", label:"Pink"},
+  {id:"brown", hex:"#975A16", label:"Brown"},
+  {id:"black", hex:"#1A202C", label:"Black"},
+  {id:"gray",  hex:"#718096", label:"Gray"},
+];
+
+const QUESTIONS = [
+  // BRAND PERSONALITY
+  {q:"Which word best describes your brand's core personality?",hint:"Think of the first impression you want to make.",opts:["Bold & daring","Calm & trustworthy","Playful & fun","Sophisticated & refined"],scores:[{energy:3,passion:2},{trust:3,calm:2},{play:3,energy:1},{luxury:3,professionalism:2}]},
+  {q:"How do you want customers to feel after interacting with your brand?",hint:"The emotional aftereffect matters.",opts:["Energized and inspired","Safe and confident","Happy and entertained","Impressed and awed"],scores:[{energy:3,creativity:1},{trust:3,calm:1},{play:3,warmth:1},{luxury:3,professionalism:1}]},
+  {q:"If your brand were a person, which archetype fits best?",hint:"Brand archetypes shape color expectations.",opts:["The Hero — courageous and determined","The Sage — wise and knowledgeable","The Jester — playful and funny","The Ruler — powerful and prestigious"],scores:[{energy:3,passion:2},{trust:3,professionalism:1},{play:3,creativity:2},{luxury:3,professionalism:3}]},
+  {q:"Which adjective do you never want associated with your brand?",hint:"Knowing what you're NOT helps define what you ARE.",opts:["Boring and predictable","Cold and distant","Immature and silly","Cheap and common"],scores:[{energy:2,creativity:2},{warmth:3,play:1},{professionalism:3,luxury:1},{luxury:3,professionalism:2}]},
+  {q:"What pace does your brand operate at?",hint:"Tempo affects color energy level.",opts:["Fast-moving and disruptive","Steady and dependable","Spontaneous and reactive","Measured and deliberate"],scores:[{energy:3,passion:2},{trust:3,calm:2},{play:3,energy:1},{professionalism:3,calm:2}]},
+  // INDUSTRY & CATEGORY
+  {q:"Which industry sector best describes your business?",hint:"Industry norms anchor audience color expectations.",opts:["Technology & innovation","Health & wellness","Finance & consulting","Fashion & lifestyle"],scores:[{trust:2,creativity:2},{nature:3,calm:2},{trust:3,professionalism:2},{luxury:2,creativity:3}]},
+  {q:"Your business model is primarily:",hint:"B2B and B2C audiences respond to different palettes.",opts:["B2B — selling to other businesses","B2C — selling directly to consumers","B2G — government & institutions","Marketplace — connecting both sides"],scores:[{professionalism:3,trust:2},{warmth:2,play:1},{trust:3,calm:2},{creativity:2,trust:2}]},
+  {q:"What product or service category are you in?",hint:"Category triggers specific color associations.",opts:["Digital products / software","Physical goods / products","Professional services","Food, lifestyle & experiences"],scores:[{creativity:3,trust:1},{nature:2,warmth:2},{professionalism:3,trust:2},{warmth:3,energy:2}]},
+  {q:"Where does most of your business happen?",hint:"Geography shapes cultural color meaning.",opts:["Online globally","Local community","Corporate offices","Events & in-person"],scores:[{creativity:2,trust:2},{warmth:3,nature:2},{professionalism:3,trust:2},{play:3,energy:2}]},
+  {q:"Which growth stage is your brand currently at?",hint:"Stage of company shapes appropriate color boldness.",opts:["Pre-launch / startup","Early growth","Scaling up","Established brand"],scores:[{passion:3,energy:2},{energy:3,creativity:2},{professionalism:2,trust:2},{trust:3,luxury:2}]},
+  // AUDIENCE
+  {q:"Your primary target audience age group is:",hint:"Age groups connect to generational color preferences.",opts:["Gen Z (under 27)","Millennials (27–42)","Gen X (43–58)","Boomers (59+)"],scores:[{play:3,energy:3},{creativity:3,warmth:2},{trust:3,professionalism:2},{trust:3,calm:3}]},
+  {q:"Your audience is primarily:",hint:"Gender associations with color are culturally influenced but still relevant.",opts:["Predominantly men","Predominantly women","Gender-neutral / all","Non-binary / progressive"],scores:[{energy:2,professionalism:2},{warmth:3,creativity:2},{trust:2,creativity:2},{creativity:3,play:2}]},
+  {q:"Your target customer's income level is:",hint:"Economic signaling affects premium vs accessible palette.",opts:["Budget-conscious","Middle market","Upper middle class","Luxury / premium"],scores:[{warmth:2,play:2},{trust:3,creativity:1},{professionalism:2,luxury:2},{luxury:3,professionalism:3}]},
+  {q:"How tech-savvy is your audience?",hint:"Tech comfort affects modern vs traditional color expectation.",opts:["Very tech-forward","Moderately comfortable","Traditional / offline-first","Mixed digital/physical"],scores:[{creativity:3,trust:2},{trust:2,professionalism:2},{trust:3,calm:2},{warmth:2,trust:2}]},
+  {q:"What motivates your target customer most?",hint:"Core motivations align with specific color emotions.",opts:["Achievement and status","Connection and belonging","Discovery and adventure","Security and stability"],scores:[{luxury:3,passion:2},{warmth:3,play:1},{energy:3,creativity:2},{trust:3,calm:3}]},
+  // VALUES
+  {q:"What is your brand's most important value?",hint:"Core values directly map to color meaning.",opts:["Innovation","Integrity","Community","Excellence"],scores:[{creativity:3,energy:2},{trust:3,calm:2},{warmth:3,nature:2},{luxury:3,professionalism:2}]},
+  {q:"How does your brand approach social responsibility?",hint:"Brand ethics affect sustainability-linked color choices.",opts:["Sustainability-first","Community-focused","Innovation for good","Traditional values"],scores:[{nature:3,trust:2},{warmth:3,trust:2},{creativity:3,trust:1},{trust:3,calm:2}]},
+  {q:"What does success look like for your brand?",hint:"Definition of success shapes aspirational color tone.",opts:["Market dominance","Customer loyalty","Industry disruption","Cultural impact"],scores:[{luxury:3,professionalism:3},{warmth:3,trust:2},{energy:3,creativity:3},{passion:3,creativity:2}]},
+  {q:"How transparent is your brand with its audience?",hint:"Transparency affects trust-signal color needs.",opts:["Radically transparent","Professionally open","Selectively open","Private / exclusive"],scores:[{trust:3,creativity:1},{trust:3,professionalism:2},{professionalism:3,luxury:1},{luxury:3,professionalism:2}]},
+  {q:"Which phrase best captures your brand mission?",hint:"Mission statement tone reveals color personality.",opts:["Change the world","Build lasting relationships","Make everyday life better","Define the premium standard"],scores:[{energy:3,passion:3},{warmth:3,trust:2},{creativity:3,warmth:2},{luxury:3,professionalism:3}]},
+  // AESTHETICS
+  {q:"Which design aesthetic resonates with you most?",hint:"Visual taste is a direct color clue.",opts:["Ultra-minimal / Bauhaus","Organic and earthy","Vibrant and maximalist","Classic and traditional"],scores:[{calm:3,professionalism:2},{nature:3,warmth:2},{energy:3,creativity:3},{trust:3,luxury:2}]},
+  {q:"Which texture or material reflects your brand best?",hint:"Material associations translate to color palettes.",opts:["Polished metal / glass","Natural wood / stone","Bold printed fabric","Premium leather / velvet"],scores:[{professionalism:3,creativity:2},{nature:3,warmth:2},{play:3,energy:2},{luxury:3,professionalism:2}]},
+  {q:"Choose a landscape that matches your brand's energy:",hint:"Environments carry strong color and mood associations.",opts:["Urban skyline at night","Tropical rainforest","Desert at golden hour","Mountain peak at dawn"],scores:[{luxury:3,professionalism:2},{nature:3,creativity:2},{warmth:3,energy:2},{trust:3,energy:2}]},
+  {q:"Which photographic style fits your brand best?",hint:"Photography style indicates color palette mood.",opts:["Black and white — timeless","Bright and airy — clean","Bold contrast — dramatic","Warm filtered — human"],scores:[{luxury:2,calm:3},{calm:3,creativity:2},{passion:3,energy:3},{warmth:3,play:2}]},
+  {q:"Your preferred typography style is:",hint:"Type personality pairs with specific color moods.",opts:["Geometric sans-serif","Humanist serif","Display and expressive","Monospace / technical"],scores:[{creativity:3,calm:2},{trust:3,luxury:2},{play:3,passion:2},{professionalism:3,creativity:2}]},
+  // EMOTION
+  {q:"Which emotion should your brand trigger first?",hint:"First emotional response should match brand promise.",opts:["Excitement and desire","Calm and reassurance","Joy and delight","Respect and admiration"],scores:[{passion:3,energy:3},{calm:3,trust:3},{play:3,warmth:3},{luxury:3,professionalism:3}]},
+  {q:"What's the emotional arc of your customer journey?",hint:"Journey emotions shape color progression.",opts:["Curiosity → Conviction","Anxiety → Relief","Boredom → Excitement","Ignorance → Expertise"],scores:[{creativity:3,trust:2},{calm:3,trust:3},{energy:3,play:3},{professionalism:3,trust:2}]},
+  {q:"Which negative emotion does your brand solve?",hint:"Pain point resolution drives color empathy signals.",opts:["Fear and uncertainty","Frustration and friction","Boredom and stagnation","Exclusion and isolation"],scores:[{trust:3,calm:3},{energy:3,creativity:2},{play:3,energy:3},{warmth:3,trust:2}]},
+  {q:"How much emotion should your brand visually express?",hint:"Emotional volume affects color saturation choice.",opts:["Very high — bold and expressive","Medium — confident but controlled","Low — subtle and refined","Varies by context"],scores:[{passion:3,energy:3},{trust:3,professionalism:2},{calm:3,luxury:2},{creativity:3,warmth:1}]},
+  {q:"Your brand's tone of voice is:",hint:"Verbal tone maps strongly to color personality.",opts:["Direct and confident","Warm and conversational","Playful and witty","Authoritative and formal"],scores:[{energy:3,passion:2},{warmth:3,play:2},{play:3,creativity:3},{professionalism:3,luxury:2}]},
+  // COMPETITION
+  {q:"How do you want to stand out from competitors?",hint:"Differentiation strategy affects color boldness.",opts:["Be the most innovative","Be the most trustworthy","Be the most fun","Be the most premium"],scores:[{creativity:3,energy:2},{trust:3,calm:2},{play:3,warmth:2},{luxury:3,professionalism:3}]},
+  {q:"Your competitors' colors are typically:",hint:"Knowing competitor palettes helps you differentiate or align.",opts:["Blues and grays","Greens and earth tones","Bright and varied","Black, gold, white"],scores:[{creativity:2,energy:2},{nature:2,warmth:2},{play:2,passion:2},{luxury:2,calm:2}]},
+  {q:"Should your brand blend in or break out?",hint:"Conformity vs disruption is a core strategic color choice.",opts:["Break the industry mold completely","Respect conventions but modernize","Blend in — trust is most important","Create our own category"],scores:[{passion:3,creativity:3},{trust:2,creativity:2},{trust:3,calm:3},{creativity:3,luxury:2}]},
+  {q:"What's your brand's competitive advantage?",hint:"The nature of your edge shapes your color story.",opts:["Speed and efficiency","Deep expertise and knowledge","Personalization and care","Exclusivity and prestige"],scores:[{energy:3,creativity:2},{trust:3,professionalism:3},{warmth:3,trust:2},{luxury:3,professionalism:3}]},
+  {q:"How do you price compared to competitors?",hint:"Price positioning aligns strongly with color palettes.",opts:["Below market — accessible","At market — competitive","Above market — premium","Ultra-premium / exclusive"],scores:[{warmth:2,play:2},{trust:3,creativity:2},{professionalism:3,luxury:2},{luxury:3,calm:3}]},
+  // CULTURE
+  {q:"Which cultural aesthetic influences your brand?",hint:"Cultural roots shape color symbolism deeply.",opts:["Western minimalism","East Asian harmony","Middle Eastern opulence","Afrocentric vibrancy"],scores:[{calm:3,professionalism:2},{calm:3,nature:2},{luxury:3,passion:2},{energy:3,creativity:3}]},
+  {q:"Your brand's cultural values lean toward:",hint:"Cultural orientation shapes color expectations.",opts:["Individualism — unique and personal","Collectivism — community and shared","Progression — future-forward","Heritage — roots and legacy"],scores:[{creativity:3,passion:2},{warmth:3,trust:2},{energy:3,creativity:3},{trust:3,calm:2}]},
+  {q:"If your brand had a country of origin aesthetic, it'd be:",hint:"National design traditions carry color signatures.",opts:["Scandinavian — clean, functional","Japanese — precise, refined","Italian — expressive, luxurious","American — bold, direct"],scores:[{calm:3,professionalism:3},{calm:3,luxury:2},{luxury:3,passion:2},{energy:3,trust:2}]},
+  {q:"Your brand's relationship with tradition is:",hint:"Tradition vs modernity is a fundamental color axis.",opts:["Deeply traditional and classic","A blend of old and new","Modern with cultural roots","Fully future-forward"],scores:[{trust:3,luxury:2},{trust:2,creativity:2},{nature:2,trust:2},{creativity:3,energy:3}]},
+  {q:"Which global brand's color vibe resonates with yours?",hint:"Brand inspiration reveals your color instinct.",opts:["Apple — minimal, premium white/black","Nike — bold, motivating black/red","Spotify — vibrant, youthful green/black","Chanel — elegant, timeless black/white"],scores:[{calm:3,luxury:3},{energy:3,passion:3},{play:3,creativity:3},{luxury:3,professionalism:3}]},
+  // PSYCHOLOGY DEEP DIVE
+  {q:"Colors on the warm side (red, orange, yellow) make you feel:",hint:"Warm spectrum personal response.",opts:["Energized and alive","Overwhelmed or anxious","Comfortable and happy","Neutral — depends on context"],scores:[{energy:3,passion:3},{calm:3,trust:2},{warmth:3,play:2},{creativity:2,trust:1}]},
+  {q:"Colors on the cool side (blue, teal, purple) make you feel:",hint:"Cool spectrum personal response.",opts:["Calm and focused","Cold and distant","Creative and inspired","Neutral — depends on context"],scores:[{calm:3,trust:3},{energy:2,passion:2},{creativity:3,trust:2},{creativity:2,warmth:1}]},
+  {q:"When you see a black and white palette, you think:",hint:"Achromatic palette psychological response.",opts:["Elegant and timeless","Boring and cold","Powerful and clear","Depending on application"],scores:[{luxury:3,professionalism:3},{play:3,warmth:3},{energy:2,trust:2},{creativity:3,calm:1}]},
+  {q:"Earth tones (browns, beiges, terracottas) feel:",hint:"Earth tone personal reaction.",opts:["Grounded and authentic","Dull and outdated","Warm and human","Modern if used right"],scores:[{nature:3,trust:2},{play:3,energy:3},{warmth:3,calm:2},{creativity:3,luxury:1}]},
+  {q:"How many colors should appear in your primary logo?",hint:"Logo color count affects palette core decisions.",opts:["One — pure and simple","Two — balanced and dynamic","Three — rich and layered","More — expressive and complex"],scores:[{calm:3,luxury:2},{trust:3,creativity:2},{creativity:3,warmth:2},{play:3,energy:3}]},
+  {q:"When customers see your brand, the first thing they should recognize is:",hint:"Visual primacy shapes dominant color choice.",opts:["Your logo / mark","Your signature color","Your typography","The overall feeling"],scores:[{trust:3,professionalism:2},{passion:3,creativity:3},{calm:3,professionalism:2},{warmth:3,play:2}]},
+  {q:"Your brand's social media presence should feel:",hint:"Digital platform personality guides color vibrancy.",opts:["Curated and editorial","Authentic and raw","Bold and eye-catching","Professional and consistent"],scores:[{luxury:3,calm:2},{warmth:3,nature:2},{energy:3,passion:3},{professionalism:3,trust:3}]},
+  {q:"Which brand story arc fits your brand?",hint:"Narrative arc shapes color emotional journey.",opts:["Underdog rises to win","Expert guides to success","Friend makes life fun","Leader defines the standard"],scores:[{passion:3,energy:3},{trust:3,professionalism:2},{warmth:3,play:3},{luxury:3,professionalism:3}]},
+  {q:"How important is color consistency across all touchpoints?",hint:"Consistency priority determines saturation and flexibility.",opts:["Critical — 100% consistent always","Very important — minor flexibility","Somewhat — vibes over rules","Less important — we adapt freely"],scores:[{professionalism:3,trust:3},{trust:3,calm:2},{creativity:3,play:2},{play:3,warmth:2}]},
+  {q:"Finally — what is the single most important thing your brand color must communicate?",hint:"This is your brand's color North Star.",opts:["Power and credibility","Warmth and connection","Innovation and creativity","Calm and trustworthiness"],scores:[{luxury:3,professionalism:3,passion:2},{warmth:3,play:2,trust:2},{creativity:3,energy:3,play:2},{calm:3,trust:3,nature:2}]},
+];
+
+const DIMENSIONS = ["energy","trust","creativity","nature","luxury","play","warmth","professionalism","calm","passion"];
+
+// Color mapping: each palette entry maps dimensions to specific colors
+const COLOR_MAP = [
+  {id:"red",    dims:["energy","passion"],       weight:0},
+  {id:"orange", dims:["energy","warmth","play"], weight:0},
+  {id:"yellow", dims:["play","energy","creativity"],weight:0},
+  {id:"green",  dims:["nature","trust","calm"],  weight:0},
+  {id:"teal",   dims:["trust","creativity","calm"],weight:0},
+  {id:"blue",   dims:["trust","calm","professionalism"],weight:0},
+  {id:"navy",   dims:["trust","professionalism","luxury"],weight:0},
+  {id:"purple", dims:["luxury","creativity","calm"],weight:0},
+  {id:"pink",   dims:["play","warmth","passion"],weight:0},
+  {id:"rose",   dims:["warmth","play","trust"],  weight:0},
+  {id:"brown",  dims:["nature","trust","warmth"],weight:0},
+  {id:"black",  dims:["luxury","professionalism","calm"],weight:0},
+  {id:"white",  dims:["calm","professionalism","creativity"],weight:0},
+  {id:"gray",   dims:["professionalism","calm","trust"],weight:0},
+  {id:"gold",   dims:["luxury","passion","warmth"],weight:0},
+  {id:"indigo", dims:["trust","professionalism","creativity"],weight:0},
+  {id:"lime",   dims:["nature","energy","creativity"],weight:0},
+  {id:"coral",  dims:["warmth","play","energy"],  weight:0},
+];
+
+const PALETTE_ARCHETYPES = {
+  luxury:{name:"Prestige & Authority",tagline:"Your brand exudes premium confidence, refined elegance, and commanding presence."},
+  trust:{name:"Trust & Reliability",tagline:"Your brand is built on credibility, clarity, and lasting customer confidence."},
+  energy:{name:"Bold & Energetic",tagline:"Your brand radiates passion, action, and an irresistible drive to move people."},
+  nature:{name:"Natural & Grounded",tagline:"Your brand connects authentically with people through organic warmth and earthy sincerity."},
+  creativity:{name:"Creative & Innovative",tagline:"Your brand leads with imagination, fresh thinking, and a bold new perspective."},
+  play:{name:"Playful & Human",tagline:"Your brand is approachable, joyful, and makes every interaction feel genuinely fun."},
+  warmth:{name:"Warm & Connected",tagline:"Your brand leads with empathy, care, and a deeply human touch."},
+  professionalism:{name:"Sharp & Professional",tagline:"Your brand signals expertise, precision, and consistent high standards."},
+  calm:{name:"Calm & Mindful",tagline:"Your brand offers clarity, peace of mind, and understated sophistication."},
+  passion:{name:"Passionate & Driven",tagline:"Your brand channels raw ambition, bold conviction, and magnetic intensity."},
+};
+
+const ROLES = ["Primary","Secondary","Accent","Supporting","Neutral"];
+
+let paletteCount = 2;
+let favSelections = [];
+let answers = [];
+let currentQ = 0;
+let scores = {};
+
+// ── INIT ──
+function init(){
+  buildCountBtns();
+  buildFavGrid();
+}
+
+function buildCountBtns(){
+  const row = document.getElementById('count-row');
+  row.innerHTML = '';
+  [2,3,4,5].forEach(n => {
+    const b = document.createElement('button');
+    b.className = 'count-btn';
+    b.textContent = n;
+    b.onclick = () => {
+      playClickSound();
+      paletteCount = n;
+      row.querySelectorAll('.count-btn').forEach(x => x.classList.remove('selected'));
+      b.classList.add('selected');
+      document.getElementById('count-next').disabled = false;
+    };
+    row.appendChild(b);
+  });
+}
+
+function buildFavGrid(){
+  const g = document.getElementById('fav-grid');
+  g.innerHTML = '';
+  FAV_COLORS.forEach(c => {
+    const el = document.createElement('div');
+    el.className = 'fav-item';
+    el.innerHTML = `<div class="fav-swatch" style="background:${c.hex}"></div><div class="fav-name">${c.label}</div>`;
+    el.onclick = () => {
+      playClickSound();
+      el.classList.toggle('selected');
+      const i = favSelections.indexOf(c.id);
+      if(i>-1) favSelections.splice(i,1); else favSelections.push(c.id);
+    };
+    g.appendChild(el);
+  });
+}
+
+function goTo(screen){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-'+screen).classList.add('active');
+}
+
+function startQuiz(){
+  answers = [];
+  scores = {};
+  DIMENSIONS.forEach(d => scores[d] = 0);
+  currentQ = 0;
+  goTo('quiz');
+  renderQ();
+}
+
+function renderQ(){
+  const q = QUESTIONS[currentQ];
+  const letters = ['A','B','C','D'];
+  document.getElementById('quiz-num').textContent = `Question ${currentQ+1} of ${QUESTIONS.length}`;
+  document.getElementById('progress-fill').style.width = `${((currentQ)/QUESTIONS.length)*100}%`;
+  document.getElementById('quiz-q').textContent = q.q;
+  document.getElementById('quiz-hint').textContent = q.hint;
+  document.getElementById('btn-back').disabled = currentQ===0;
+  document.getElementById('btn-next').disabled = answers[currentQ]===undefined;
+  const grid = document.getElementById('options-grid');
+  grid.innerHTML = '';
+  q.opts.forEach((opt,i) => {
+    const el = document.createElement('button');
+    el.className = 'opt' + (answers[currentQ]===i?' selected':'');
+    el.innerHTML = `<span class="opt-letter">${letters[i]}</span> ${opt}`;
+    el.style.animationDelay = `${i * 0.08}s`;
+    el.onclick = () => {
+      playClickSound();
+      answers[currentQ] = i;
+      grid.querySelectorAll('.opt').forEach((x,j) => x.classList.toggle('selected', j===i));
+      document.getElementById('btn-next').disabled = false;
+    };
+    grid.appendChild(el);
+  });
+
+}
+
+function quizNext(){
+  if(answers[currentQ]===undefined) return;
+  const q = QUESTIONS[currentQ];
+  const chosen = q.scores[answers[currentQ]];
+  Object.keys(chosen).forEach(k => { scores[k] = (scores[k]||0) + chosen[k]; });
+  currentQ++;
+  if(currentQ >= QUESTIONS.length){ analyzeResults(); return; }
+  renderQ();
+}
+
+function quizBack(){
+  if(currentQ===0) return;
+  const q = QUESTIONS[currentQ-1];
+  if(answers[currentQ-1]!==undefined){
+    const chosen = q.scores[answers[currentQ-1]];
+    Object.keys(chosen).forEach(k => { scores[k] = Math.max(0,(scores[k]||0) - chosen[k]); });
+  }
+  currentQ--;
+  renderQ();
+}
+
+function analyzeResults(){
+  goTo('loading');
+  setTimeout(buildResult, 2200);
+}
+
+function buildResult(){
+  // Boost fav colors
+  COLOR_MAP.forEach(c => c.weight = 0);
+  
+  // Score fav colors
+  favSelections.forEach(fav => {
+    const cm = COLOR_MAP.find(c => c.id===fav);
+    if(cm) cm.weight += 8;
+  });
+
+  // Score from quiz
+  COLOR_MAP.forEach(cm => {
+    cm.dims.forEach(d => { cm.weight += (scores[d]||0); });
+  });
+
+  // Sort and pick top colors
+  const sorted = [...COLOR_MAP].sort((a,b) => b.weight - a.weight);
+  const palette = sorted.slice(0, paletteCount).map(c => COLORS_DB[c.id]);
+
+  // Determine archetype
+  const topDim = DIMENSIONS.reduce((a,b) => (scores[a]||0)>=(scores[b]||0)?a:b);
+  const archetype = PALETTE_ARCHETYPES[topDim] || PALETTE_ARCHETYPES.trust;
+
+  // Trait scores for display (normalized)
+  const maxScore = Math.max(...DIMENSIONS.map(d => scores[d]||0), 1);
+  const traits = DIMENSIONS.map(d => ({dim:d, val:Math.round(((scores[d]||0)/maxScore)*100)})).sort((a,b)=>b.val-a.val).slice(0,6);
+
+  // Build explanation
+  const explanation = buildExplanation(palette, topDim, favSelections);
+
+  // Render
+  document.getElementById('result-name').textContent = archetype.name;
+  document.getElementById('result-tagline').textContent = archetype.tagline;
+
+  // Strip
+  const strip = document.getElementById('palette-strip');
+  strip.innerHTML = '';
+  palette.forEach(c => {
+    const div = document.createElement('div');
+    div.className = 'palette-color';
+    const lum = hexLuminance(c.hex);
+    div.style.background = c.hex;
+    div.innerHTML = `<span class="palette-hex" style="color:${lum>0.4?'rgba(0,0,0,0.7)':'rgba(255,255,255,0.85)'}">${c.hex}</span>`;
+    div.onclick = () => { playClickSound(); copyHex(c.hex); };
+    strip.appendChild(div);
+  });
+
+  // Cards
+  const cards = document.getElementById('palette-cards');
+  cards.innerHTML = '';
+  palette.forEach((c,i) => {
+    const div = document.createElement('div');
+    div.className = 'pcard';
+    div.style.animationDelay = `${i * 0.08}s`;
+    div.innerHTML = `
+      <div class="pcard-swatch" style="background:${c.hex}"></div>
+      <div class="pcard-body">
+        <div class="pcard-role">${ROLES[i]||'Supporting'} color</div>
+        <div class="pcard-color-name">${c.name}</div>
+        <div class="pcard-hex-code">${c.hex} <button class="copy-btn" onclick="copyHex('${c.hex}')">copy</button></div>
+        <div class="pcard-meaning">${c.meaning}</div>
+      </div>`;
+    cards.appendChild(div);
+  });
+
+  // Traits
+  const tb = document.getElementById('trait-bars');
+  tb.innerHTML = '';
+  traits.forEach(t => {
+    const row = document.createElement('div');
+    row.className = 'trait-row';
+    row.innerHTML = `
+      <span class="trait-label">${t.dim.charAt(0).toUpperCase()+t.dim.slice(1)}</span>
+      <div class="trait-bar-bg"><div class="trait-bar-fill" style="width:0%" data-val="${t.val}"></div></div>
+      <span class="trait-score">${t.val}</span>`;
+    tb.appendChild(row);
+  });
+  document.getElementById('result-explanation').textContent = explanation;
+
+  goTo('result');
+
+  // Animate trait bars
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(()=>{
+      document.querySelectorAll('.trait-bar-fill').forEach(b => {
+        b.style.width = b.dataset.val + '%';
+      });
+    });
+  });
+}
+
+function buildExplanation(palette, topDim, favs){
+  const names = palette.map(p=>p.name).join(', ');
+  const favNote = favs.length ? ` Your natural affinity for ${favs.slice(0,2).join(' and ')} was also factored into the selection.` : '';
+  const dimMap = {
+    energy:"a high-energy, action-driven personality that benefits from bold, motivating tones",
+    trust:"a credibility-first brand that requires colors with deep associations of reliability and honesty",
+    creativity:"an innovative, forward-thinking identity where creative and unexpected hues build curiosity",
+    nature:"an authentic, grounded brand where natural tones reinforce genuine human connection",
+    luxury:"a premium-tier brand where rich, restrained tones signal exclusivity and prestige",
+    play:"a playful, human-centered brand where approachable and joyful colors build emotional bridges",
+    warmth:"a warmth-centered brand where inviting tones make every customer feel genuinely seen",
+    professionalism:"a sharp, professional brand where structured, confident palettes signal expertise",
+    calm:"a calm, mindful brand where serene tones build lasting trust and emotional ease",
+    passion:"a passionate, driven brand where intense tones convey conviction and magnetic energy",
+  };
+  return `Your quiz responses reveal ${dimMap[topDim]||"a unique brand vision"}. The palette of ${names} was selected to embody this positioning across all brand touchpoints.${favNote} Together, these colors create a coherent visual language that will resonate emotionally with your target audience and clearly communicate your brand's core promise.`;
+}
+
+function hexLuminance(hex){
+  const r = parseInt(hex.slice(1,3),16)/255;
+  const g = parseInt(hex.slice(3,5),16)/255;
+  const b = parseInt(hex.slice(5,7),16)/255;
+  return 0.2126*r + 0.7152*g + 0.0722*b;
+}
+
+function copyHex(hex){
+  playClickSound();
+  navigator.clipboard.writeText(hex).catch(()=>{});
+  const t = document.getElementById('toast');
+  t.textContent = `Copied ${hex}`;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2000);
+}
+
+function restart(){
+  favSelections = [];
+  paletteCount = 2;
+  DIMENSIONS.forEach(d => scores[d]=0);
+  document.querySelectorAll('.count-btn').forEach(b=>b.classList.remove('selected'));
+  document.getElementById('count-next').disabled = true;
+  document.querySelectorAll('.fav-item').forEach(b=>b.classList.remove('selected'));
+  goTo('hero');
+}
+
+init();
+</script>
+</body>
+</html>
