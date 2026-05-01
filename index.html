@@ -3,52 +3,79 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Manar Digital Empire – Brand Color Quiz</title>
+<title>Manar Digital Empire - Brand Color Quiz</title>
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
   :root{
     --bg:#12131a;--bg2:#191d28;--bg3:#1f2432;
-    --text:#f4f7ff;--text2:#abb1cc;--text3:#7f89a4;
+    --text:#fff;--text2:#fff;--text3:#fff;
     --border:rgba(255,255,255,0.08);--accent:#6be0ff;
     --accent-2:#f4f1a8;--accent-3:#7dc8ff;
     --radius:12px;--radius-sm:8px;
   }
-  body{font-family:'Segoe UI',system-ui,sans-serif;background-image:radial-gradient(circle at top left, rgba(107,224,255,0.18), transparent 16%),radial-gradient(circle at bottom right, rgba(244,241,168,0.18), transparent 18%),url("images/photo1.jpg");background-size:cover,cover,cover;background-position:center center,center center,center center;background-repeat:no-repeat,no-repeat,no-repeat;color:var(--text);min-height:100vh;overflow-x:hidden}
+  body{font-family:Arial,Helvetica,sans-serif;background:#05070d;color:var(--text);min-height:100vh;overflow-x:hidden}
+  .bg-video{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
+  .video-overlay{position:fixed;inset:0;background:linear-gradient(rgba(5,7,13,0.62),rgba(5,7,13,0.72));z-index:-1;pointer-events:none}
 
   /* CUSTOM CURSOR */
+  @media (pointer:fine){
+    body,button,.opt,.fav-item,.count-btn,.palette-color{cursor:none}
+  }
   .cursor {
-    width: 8px; height: 8px;
-    background: var(--accent);
+    width: 12px; height: 12px;
+    background: radial-gradient(circle, #fff 0 22%, var(--accent) 45%, rgba(244,241,168,0.85) 72%, transparent 73%);
     border-radius: 50%;
     position: fixed;
     pointer-events: none;
     z-index: 9999;
-    transform: translate(-50%,-50%);
-    transition: transform 0.1s, width 0.2s, height 0.2s, background 0.2s;
-    mix-blend-mode: difference;
-    box-shadow: 0 0 8px var(--accent), 0 0 16px rgba(107,224,255,0.5);
+    transform: translate(-50%,-50%) scale(1);
+    transition: width .22s ease, height .22s ease, transform .18s ease, opacity .25s ease;
+    mix-blend-mode: screen;
+    box-shadow: 0 0 10px rgba(255,255,255,0.85), 0 0 22px rgba(107,224,255,0.7), 0 0 42px rgba(244,241,168,0.32);
+    animation: cursorBreathe 2.4s ease-in-out infinite;
   }
   .cursor-ring {
-    width: 32px; height: 32px;
-    border: 1.5px solid var(--accent);
+    width: 42px; height: 42px;
+    border: 1px solid rgba(255,255,255,0.55);
     border-radius: 50%;
     position: fixed;
     pointer-events: none;
     z-index: 9998;
     transform: translate(-50%,-50%);
-    transition: transform 0.12s ease-out, width 0.3s, height 0.3s, opacity 0.3s, box-shadow 0.3s;
-    opacity: 0.6;
-    box-shadow: 0 0 12px rgba(107,224,255,0.3);
+    transition: width .32s cubic-bezier(.2,.8,.2,1), height .32s cubic-bezier(.2,.8,.2,1), opacity .3s ease, border-color .3s ease, box-shadow .3s ease;
+    opacity: .75;
+    background:
+      radial-gradient(circle, transparent 58%, rgba(255,255,255,0.08) 60%, transparent 68%),
+      conic-gradient(from 90deg, rgba(107,224,255,0), rgba(107,224,255,0.95), rgba(244,241,168,0.9), rgba(255,255,255,0), rgba(107,224,255,0));
+    -webkit-mask: radial-gradient(circle, transparent 58%, #000 60%);
+    mask: radial-gradient(circle, transparent 58%, #000 60%);
+    box-shadow: 0 0 18px rgba(107,224,255,0.35), inset 0 0 14px rgba(255,255,255,0.12);
+    animation: cursorOrbit 4.5s linear infinite;
   }
   .cursor-ring.active {
-    box-shadow: 0 0 24px rgba(107,224,255,0.6), 0 0 36px rgba(244,241,168,0.3);
-    animation: cursorGlow 1.5s ease-in-out infinite;
+    border-color: rgba(244,241,168,0.95);
+    box-shadow: 0 0 28px rgba(107,224,255,0.72), 0 0 56px rgba(244,241,168,0.34), inset 0 0 18px rgba(255,255,255,0.18);
+    animation: cursorOrbit 2.2s linear infinite, cursorGlow 1.45s ease-in-out infinite;
+  }
+  .cursor.pressed{transform:translate(-50%,-50%) scale(.72);box-shadow:0 0 18px rgba(255,255,255,0.95),0 0 34px rgba(244,241,168,0.65)}
+  .cursor-ring.pressed{width:26px;height:26px;opacity:1}
+  .cursor.hidden,.cursor-ring.hidden{opacity:0}
+  .cursor-trail{
+    position:fixed;
+    width:7px;height:7px;
+    border-radius:50%;
+    pointer-events:none;
+    z-index:9997;
+    transform:translate(-50%,-50%);
+    background:rgba(255,255,255,0.7);
+    box-shadow:0 0 12px rgba(107,224,255,0.85),0 0 24px rgba(244,241,168,0.32);
+    animation:trailFade .55s ease-out forwards;
   }
 
   /* NAV */
-  nav{display:flex;align-items:center;justify-content:center;padding:1.2rem 2rem;border-bottom:0.5px solid var(--border);background:var(--bg);position:relative;overflow:hidden}
-  .logo{font-size:1.2rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:linear-gradient(45deg, var(--accent), var(--accent-2), var(--accent-3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;color:transparent;text-shadow:0 0 20px rgba(107,224,255,0.5);transition:transform 0.1s ease;will-change:transform}
-  .logo span{background:linear-gradient(45deg, var(--accent-2), var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;color:transparent;text-shadow:0 0 20px rgba(244,241,168,0.5);font-weight:600}
+  nav{display:flex;align-items:center;justify-content:center;padding:1.2rem 2rem;border-bottom:0.5px solid var(--border);background:rgba(0,0,0,0.2);position:relative;overflow:hidden;backdrop-filter:blur(6px)}
+  .logo{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:.9rem;font-size:clamp(1.6rem,3vw,2.7rem);font-weight:800;letter-spacing:.08em;line-height:1.15;text-align:center;text-transform:uppercase;color:#fff;text-shadow:0 0 22px rgba(255,255,255,0.42);transition:transform 0.1s ease;will-change:transform}
+  .logo span{color:#fff;font-weight:800}
 
   /* SCREENS */
   .screen{display:none;animation:fadeIn .4s ease}
@@ -56,7 +83,10 @@
   @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
   @keyframes neonPulse{from{box-shadow:0 0 12px rgba(107,224,255,0.14),0 0 24px rgba(107,224,255,0.08)}to{box-shadow:0 0 20px rgba(244,241,168,0.22),0 0 36px rgba(244,241,168,0.12)}}
   @keyframes glowFloat{0%{transform:translateY(0)}50%{transform:translateY(-4px)}100%{transform:translateY(0)}}
-  @keyframes cursorGlow{0%,100%{box-shadow:0 0 8px var(--accent), 0 0 16px rgba(107,224,255,0.5)}50%{box-shadow:0 0 12px var(--accent), 0 0 24px rgba(107,224,255,0.8)}}
+  @keyframes cursorBreathe{0%,100%{filter:saturate(1);opacity:.92}50%{filter:saturate(1.35);opacity:1}}
+  @keyframes cursorOrbit{to{rotate:360deg}}
+  @keyframes cursorGlow{0%,100%{filter:drop-shadow(0 0 8px rgba(107,224,255,0.7))}50%{filter:drop-shadow(0 0 18px rgba(244,241,168,0.7))}}
+  @keyframes trailFade{0%{opacity:.62;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(2.8)}}
 
   /* HERO */
   #screen-hero{text-align:center;padding:5rem 2rem 4rem}
@@ -98,12 +128,12 @@
   .opt:hover{border-color:rgba(107,224,255,0.35);background:rgba(255,255,255,0.06);box-shadow:0 0 18px rgba(107,224,255,0.08)}
   .opt.selected{border-color:rgba(107,224,255,0.8);background:rgba(107,224,255,0.1);font-weight:500;box-shadow:0 0 18px rgba(107,224,255,0.16)}
   .opt-letter{width:26px;height:26px;border-radius:50%;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:600;flex-shrink:0;color:var(--text3);background:rgba(255,255,255,0.03)}
-  .opt.selected .opt-letter{background:rgba(107,224,255,0.9);color:#090c13;border-color:rgba(107,224,255,0.9)}
+  .opt.selected .opt-letter{background:rgba(107,224,255,0.9);color:#fff;border-color:rgba(107,224,255,0.9)}
   .quiz-nav{display:flex;justify-content:space-between;align-items:center}
   .btn-ghost{background:none;border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:.7rem 1.5rem;font-size:.9rem;cursor:pointer;color:var(--text2);transition:all .18s}
   .btn-ghost:hover{border-color:#aaa;color:var(--text)}
-  .btn-next{background:var(--text);color:#fff;border:none;border-radius:var(--radius-sm);padding:.7rem 1.8rem;font-size:.9rem;font-weight:500;cursor:pointer;transition:opacity .2s}
-  .btn-next:hover{opacity:.8}
+  .btn-next{background:linear-gradient(135deg,#006d9a,#5f4f00);color:#fff;border:1px solid rgba(255,255,255,0.7);border-radius:var(--radius-sm);padding:1rem 2.6rem;font-size:1.05rem;font-weight:800;cursor:pointer;transition:all .2s;box-shadow:0 0 22px rgba(107,224,255,0.45),0 0 34px rgba(244,241,168,0.24)}
+  .btn-next:hover{opacity:1;transform:translateY(-2px);box-shadow:0 0 32px rgba(107,224,255,0.65),0 0 48px rgba(244,241,168,0.34)}
   .btn-next:disabled{opacity:.35;cursor:default}
 
   /* LOADING */
@@ -145,11 +175,15 @@
   .copy-btn:hover{color:var(--text)}
 
   /* CLIP */
-  .copied-toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--text);color:#fff;padding:.5rem 1.2rem;border-radius:50px;font-size:.82rem;pointer-events:none;opacity:0;transition:opacity .3s}
+  .copied-toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.82);color:#fff;padding:.5rem 1.2rem;border-radius:50px;font-size:.82rem;pointer-events:none;opacity:0;transition:opacity .3s}
   .copied-toast.show{opacity:1}
 </style>
 </head>
 <body>
+<video class="bg-video" autoplay muted loop playsinline>
+  <source src="images/vedio 1.mp4" type="video/mp4">
+</video>
+<div class="video-overlay"></div>
 
 <!-- Custom cursor -->
 <div class="cursor" id="cursor"></div>
@@ -161,7 +195,7 @@
 
 <!-- HERO -->
 <div id="screen-hero" class="screen active">
-  <div class="hero-badge">Brand Identity Tool</div>
+  <div class="hero-badge">Color Alchemy Studio</div>
   <h1 class="hero-title">Discover Your Perfect Brand Color Palette</h1>
   <p class="hero-sub">Answer 50 psychology-based questions and we'll build a scientifically matched color theme for your brand — rooted in human behavior and color theory.</p>
   <button class="btn-primary" onclick="goTo('count')">Start the Quiz</button>
@@ -242,12 +276,37 @@ const cursor = document.getElementById('cursor');
 const ring = document.getElementById('cursorRing');
 const logo = document.querySelector('.logo');
 let mx = 0, my = 0, rx = 0, ry = 0, lx = 0, ly = 0;
+let lastTrail = 0;
 
 document.addEventListener('mousemove', e => {
   mx = e.clientX;
   my = e.clientY;
   cursor.style.left = mx + 'px';
   cursor.style.top = my + 'px';
+  cursor.classList.remove('hidden');
+  ring.classList.remove('hidden');
+  if(Date.now() - lastTrail > 55) {
+    lastTrail = Date.now();
+    const trail = document.createElement('span');
+    trail.className = 'cursor-trail';
+    trail.style.left = mx + 'px';
+    trail.style.top = my + 'px';
+    document.body.appendChild(trail);
+    setTimeout(() => trail.remove(), 600);
+  }
+});
+
+document.addEventListener('mousedown', () => {
+  cursor.classList.add('pressed');
+  ring.classList.add('pressed');
+});
+document.addEventListener('mouseup', () => {
+  cursor.classList.remove('pressed');
+  ring.classList.remove('pressed');
+});
+document.addEventListener('mouseleave', () => {
+  cursor.classList.add('hidden');
+  ring.classList.add('hidden');
 });
 
 // Play click sound utility
@@ -280,19 +339,19 @@ function playClickSound() {
 
 document.querySelectorAll('button, .opt, .fav-item, .count-btn, .palette-color').forEach(el => {
   el.addEventListener('mouseenter', () => {
-    cursor.style.width = '6px';
-    cursor.style.height = '6px';
-    ring.style.width = '48px';
-    ring.style.height = '48px';
-    ring.style.opacity = '0.9';
+    cursor.style.width = '18px';
+    cursor.style.height = '18px';
+    ring.style.width = '64px';
+    ring.style.height = '64px';
+    ring.style.opacity = '1';
     ring.classList.add('active');
   });
   el.addEventListener('mouseleave', () => {
-    cursor.style.width = '8px';
-    cursor.style.height = '8px';
-    ring.style.width = '32px';
-    ring.style.height = '32px';
-    ring.style.opacity = '0.6';
+    cursor.style.width = '12px';
+    cursor.style.height = '12px';
+    ring.style.width = '42px';
+    ring.style.height = '42px';
+    ring.style.opacity = '0.75';
     ring.classList.remove('active');
   });
 });
@@ -588,9 +647,8 @@ function buildResult(){
   palette.forEach(c => {
     const div = document.createElement('div');
     div.className = 'palette-color';
-    const lum = hexLuminance(c.hex);
     div.style.background = c.hex;
-    div.innerHTML = `<span class="palette-hex" style="color:${lum>0.4?'rgba(0,0,0,0.7)':'rgba(255,255,255,0.85)'}">${c.hex}</span>`;
+    div.innerHTML = `<span class="palette-hex" style="color:#fff">${c.hex}</span>`;
     div.onclick = () => { playClickSound(); copyHex(c.hex); };
     strip.appendChild(div);
   });
